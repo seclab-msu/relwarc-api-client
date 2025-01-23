@@ -5,6 +5,8 @@ from urllib.parse import urlparse, urljoin
 import requests
 import websockets.sync.client
 
+DEFAULT_SERVER_ADDR = 'https://relwarc.solidpoint.net'
+
 class RelwarcAPIError(Exception):
     def __init__(self, endpoint_url, status, msg):
         self.endpoint_url = endpoint_url
@@ -25,7 +27,7 @@ class RelwarcJobError(Exception):
         super().__init__(message)
 
 class RelwarcAPIClient:
-    def __init__(self, api_token, server_addr='https://relwarc.solidpoint.net'):
+    def __init__(self, api_token, server_addr=DEFAULT_SERVER_ADDR):
         self.token = api_token
         self.server_addr = server_addr
         self.server_origin = self.origin_from_url(server_addr)
@@ -124,7 +126,7 @@ if __name__ == '__main__':
         prog='Relwarc API Client'
     )
 
-    argparser.add_argument('--server-addr', default='https://relwarc.solidpoint.net')
+    argparser.add_argument('--server-addr', default=DEFAULT_SERVER_ADDR)
     argparser.add_argument('--api-token', required=True)
 
 

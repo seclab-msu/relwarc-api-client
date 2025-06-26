@@ -7,12 +7,14 @@ class RelwarcAPIClient {
     token
     serverAddr
     wsURL
-    constructor(apiToken, serverAddr=DEFAULT_SERVER_ADDR) {
+    verbose
+    constructor(apiToken, serverAddr=DEFAULT_SERVER_ADDR, verbose=true) {
         this.token = apiToken;
         this.serverAddr = serverAddr;
         const wsURL = new URL('/api/job/watch', serverAddr);
         wsURL.protocol = wsURL.protocol.replace('http', 'ws');
         this.wsURL = wsURL;
+        this.verbose = verbose;
     }
 
     async analyzeSourceCode(sourceCode) {
@@ -65,7 +67,11 @@ class RelwarcAPIClient {
             }
             throw new RelwarcAPIError(endpointURL, response.status, errMsg);
         }
-        return (await response.json()).job_id;
+        const jobID = (await response.json()).job_id;
+        if (this.verbose) {
+            console.error('analysis request sent, jobID:', jobID);
+        }
+        return jobID;
     }
 
     async websocketWatchJob(jobId, msgCallback) {
@@ -93,6 +99,8 @@ class RelwarcAPIClient {
                 }
                 if (data.type === 'result' || data.type === 'error') {
                     doneCallback();
+                } else if (this.verbose) {
+                    console.error('analyzer:', data.type, data.message);
                 }
             } catch (err) {
                 errCallback(err);

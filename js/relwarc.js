@@ -48,14 +48,18 @@ class RelwarcAPIClient {
     }
 
     async #sendAnalysisRequest(endpointURL, contentType, payload) {
-        const response = await fetch(endpointURL, {
+        const options = {
             method: 'POST',
             headers: {
                 'X-API-Token': this.token,
                 'Content-Type': contentType
             },
             body: payload
-        });
+        };
+        if (payload instanceof ReadableStream) {
+            options.duplex = 'half';
+        }
+        const response = await fetch(endpointURL, options);
 
         if (!response.ok) {
             let errMsg;

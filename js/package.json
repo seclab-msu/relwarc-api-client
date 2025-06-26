@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "argparse": "^2.0.1",
+    "puppeteer": "^24.10.2",
+    "tar-stream": "^3.1.7",
     "ws": "^8.18.0"
   }
 }

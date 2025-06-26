@@ -83,6 +83,8 @@ class RelwarcAPIClient {
         let options = undefined;
         if (WebSocket.length > 1) {
             options = { origin: new URL(this.serverAddr).origin };
+        } else if (!(WebSocket + '').includes('[native code]')) {
+            options = { headers: { Origin: new URL(this.serverAddr).origin } };
         }
         const ws = new WebSocket(this.wsURL, options);
 
